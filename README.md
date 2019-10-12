@@ -7,28 +7,121 @@ specialized for EECS 491, the
 ## What is Porcupine491?
 
 Porcupine491 is a fast linearizability checker for testing the correctness of
-distributed systems. Specifically, given a history like this:
-
-Now, suppose we have another history:
+a distributed Key-Value store. Specifically, given a history like this:
 
 ```
-C0:  |------------- PUT(200) -------------|
-C1:    |- GET(): 200 -|
-C2:                        |- GET(): 0 -|
+T0:  |------------- PUT(200) -------------|
+T1:    |- GET(): 200 -|
+T2:                        |- GET(): 0 -|
 ```
 
-We can check the history with Porcupine and see that it's not linearizable:
+We can check the history with Porcupine491 and see that it's not linearizable:
 
 ```go
 ok := porcupine.CheckEvents(registerModel, events)
 // returns false
 ```
 
+Given another history:
+
+```
+T0:  |------------- PUT(200) -------------|
+T1:    |- GET(): 200 -|
+T2:                        |- GET(): 0 -|
+```
+
+We can check the history with Porcupine491 and see that it's not linearizable:
+
+```go
+ok := porcupine.CheckEvents(registerModel, events)
+// returns false
+```
+
+Porcupine491 supports the following three operations:
+  1. PUT
+  2. APPEND
+  3. GET
+
 ## Usage
 
-Porcupine takes an executable model of a system along with a history, and it
+Every time a thread performs an operation, it logs its operation in JSON format. 
+For instance, here's what the GET(200) operation above would look like:
+
+```
+{
+  time: 2019101200,
+  id: 1,
+  type: start,
+  op: get,
+  key: 10,
+}
+
+{
+  time: 2019101201,
+  id: 1,
+  type: end,
+  op: get,
+  key: 10,
+  val: 200,
+}
+```
+
+Here's what the entire operation above would look like:
+
+```
+[
+  {
+    time: 2019101200,
+    id: 0,
+    type: start,
+    op: put,
+    key: 10,
+    val: 200,
+  },
+  {
+    time: 2019101205,
+    id: 0,
+    type: end,
+    op: put,
+    key: 10,
+  },
+  {
+    time: 2019101200,
+    id: 1,
+    type: start,
+    op: get,
+    key: 10,
+  },
+  {
+    time: 2019101201,
+    id: 1,
+    type: end,
+    op: get,
+    key: 10,
+    val: 200,
+  },
+  {
+    time: 2019101203,
+    id: 2,
+    type: start,
+    op: get,
+    key: 10,
+  },
+  {
+    time: 201910120504,
+    id: 0,
+    type: end,
+    op: get,
+    key: 0,
+  },
+]
+```
+
+## How it works
+
+Porcupine491 takes an executable model of a system along with a history, and it
 runs a decision procedure to determine if the history is linearizable with
-respect to the model. Porcupine supports specifying history in two ways, either
+respect to the model. Porcupine491 supports specifying history in two ways, either
 as a list of operations with given call and return times, or as a list of
 call/return events in time order.
 
@@ -39,7 +132,7 @@ TODO: Add how to write a log
 
 ## Implementation
 
-Porcupine implements the algorithm described in [Faster linearizability
+Porcupine491 implements the algorithm described in [Faster linearizability
 checking via P-compositionality][faster-linearizability-checking], an
 optimization of the algorithm described in [Testing for
 Linearizability][linearizability-testing].
