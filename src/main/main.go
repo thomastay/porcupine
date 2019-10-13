@@ -7,10 +7,13 @@ import (
 )
 
 func main() {
-	// t.Parallel()
-	kvModel := porcupine.GetKvModel()
+    // Parse the JSON file given as a log
 	events := porcupine.ParseKvLog(os.Args[1])
-	res := porcupine.CheckEvents(kvModel, events)
+    // Check whether the series of events
+    //  is linearizable
+    // If it is, it follows the UNIX philosophy
+    //  and gives no output
+	res := porcupine.CheckKvEntries(events)
 	if !res {
 		fmt.Println(`
         ##################################

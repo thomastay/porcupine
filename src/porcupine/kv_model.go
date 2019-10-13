@@ -11,7 +11,7 @@ type kvInput struct {
 	value string
 }
 
-func GetKvModel() Model {
+func getKvModel() Model {
 	return Model{
 		PartitionEvent: func(history []Event) [][]Event {
 			m := make(map[string][]Event)

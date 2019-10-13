@@ -140,8 +140,10 @@ Linearizability][linearizability-testing].
 
 
 Copyright (c) 2019 Thomas Tay
+
 Copyright (c) 2017-2018 Anish Athalye. 
-Released under the MIT License. See [LICENSE.md][license] for details.
+
+Released under the MIT License. See [license](LICENSE.md) for details.
 
 [faster-linearizability-checking]: https://arxiv.org/pdf/1504.00204.pdf
 [linearizability-testing]: http://www.cs.ox.ac.uk/people/gavin.lowe/LinearizabiltyTesting/paper.pdf
