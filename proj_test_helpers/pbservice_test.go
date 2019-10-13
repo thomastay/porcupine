@@ -45,14 +45,14 @@ func TestThomas(t *testing.T) {
 	ck := MakeClerk(vshost, "")
 	s1 := StartServer(vshost, port(tag, 1))
 
-    var entries []porcupine.KVLogEntry
-    ck.porcupine_put(0, entries, "111", "v1")
-    ck.porcupine_get(0, entries, "111")
-    ck.porcupine_append(0, entries, "111", "v1")
-    ck.porcupine_get(0, entries, "111")
+	var entries []porcupine.KVLogEntry
+	ck.porcupine_put(0, entries, "111", "v1")
+	ck.porcupine_get(0, entries, "111")
+	ck.porcupine_append(0, entries, "111", "v1")
+	ck.porcupine_get(0, entries, "111")
 
-    fileData, _ := json.MarshalIndent(entries, "", "  ")
-    _ = ioutil.WriteFile("test.json", fileData, 0644)
+	fileData, _ := json.MarshalIndent(entries, "", "  ")
+	_ = ioutil.WriteFile("test.json", fileData, 0644)
 
 	s1.kill()
 }
@@ -65,29 +65,29 @@ func TestThomas2(t *testing.T) {
 	_ = viewservice.MakeClerk("", vshost)
 	s1 := StartServer(vshost, port(tag, 1))
 
-    results := make(chan []porcupine.KVLogEntry)
+	results := make(chan []porcupine.KVLogEntry)
 
-    numClients := 3
-    for i := 0; i < numClients; i++ {
-        go func (id int) {
-            ck := MakeClerk(vshost, "")
-            var entries []porcupine.KVLogEntry
-            entries = ck.porcupine_put(id, entries, "111", "v1")
-            entries = ck.porcupine_get(id, entries, "111")
-            entries = ck.porcupine_append(id, entries, "111", "v1")
-            entries = ck.porcupine_get(id, entries, "111")
-            results <-entries
-        }(i)
-    }
+	numClients := 3
+	for i := 0; i < numClients; i++ {
+		go func(id int) {
+			ck := MakeClerk(vshost, "")
+			var entries []porcupine.KVLogEntry
+			entries = ck.porcupine_put(id, entries, "111", "v1")
+			entries = ck.porcupine_get(id, entries, "111")
+			entries = ck.porcupine_append(id, entries, "111", "v1")
+			entries = ck.porcupine_get(id, entries, "111")
+			results <- entries
+		}(i)
+	}
 
-    var entries []porcupine.KVLogEntry
-    for i := 0; i < numClients; i++ {
-        temp := <-results
-        entries = append(entries, temp...)
-    }
+	var entries []porcupine.KVLogEntry
+	for i := 0; i < numClients; i++ {
+		temp := <-results
+		entries = append(entries, temp...)
+	}
 
-    fileData, _ := json.MarshalIndent(entries, "", "  ")
-    _ = ioutil.WriteFile("test.json", fileData, 0644)
+	fileData, _ := json.MarshalIndent(entries, "", "  ")
+	_ = ioutil.WriteFile("test.json", fileData, 0644)
 
 	s1.kill()
 }
@@ -130,40 +130,40 @@ func TestThomas3(t *testing.T) {
 	vck.Get()
 	const nclients = 3
 	const nkeys = 2
-    results := make(chan []porcupine.KVLogEntry)
+	results := make(chan []porcupine.KVLogEntry)
 
 	for xi := 0; xi < nclients; xi++ {
 		go func(id int) {
 			ck := MakeClerk(vshost, "")
 			rr := rand.New(rand.NewSource(int64(os.Getpid() + id)))
-            var entries []porcupine.KVLogEntry
+			var entries []porcupine.KVLogEntry
 			for atomic.LoadInt32(&done) == 0 {
-                t := rr.Int() % 3
-                k := strconv.Itoa(rr.Int() % nkeys)
-                v := strconv.Itoa(rr.Int())
-                switch t {
-                case 0:
-                    entries = ck.porcupine_put(id, entries, k, v)
-                case 1:
-                    entries = ck.porcupine_get(id, entries, k)
-                case 2:
-                    entries = ck.porcupine_append(id, entries, k, v)
-                }
+				t := rr.Int() % 3
+				k := strconv.Itoa(rr.Int() % nkeys)
+				v := strconv.Itoa(rr.Int())
+				switch t {
+				case 0:
+					entries = ck.porcupine_put(id, entries, k, v)
+				case 1:
+					entries = ck.porcupine_get(id, entries, k)
+				case 2:
+					entries = ck.porcupine_append(id, entries, k, v)
+				}
 			}
-            results <-entries
+			results <- entries
 		}(xi)
-    }
+	}
 	time.Sleep(5 * time.Second)
 	atomic.StoreInt32(&done, 1)
 
-    var entries []porcupine.KVLogEntry
-    for i := 0; i < nclients; i++ {
-        temp := <-results
-        entries = append(entries, temp...)
-    }
+	var entries []porcupine.KVLogEntry
+	for i := 0; i < nclients; i++ {
+		temp := <-results
+		entries = append(entries, temp...)
+	}
 
-    fileData, _ := json.MarshalIndent(entries, "", "  ")
-    _ = ioutil.WriteFile("../../test_data/c3_unreliable.json", fileData, 0644)
+	fileData, _ := json.MarshalIndent(entries, "", "  ")
+	_ = ioutil.WriteFile("../../test_data/c3_unreliable.json", fileData, 0644)
 
 	for i := 0; i < nservers; i++ {
 		sa[i].kill()
@@ -172,4 +172,3 @@ func TestThomas3(t *testing.T) {
 	vs.Kill()
 	time.Sleep(time.Second)
 }
-
