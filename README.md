@@ -49,20 +49,19 @@ For instance, here's what the GET(200) operation above would look like:
 
 ```
 {
-  time: 2019101200,
-  id: 1,
-  type: start,
-  op: get,
-  key: 10,
+  Time: 2019101200,
+  Id: 1,
+  Type: start,
+  Op: get,
+  Key: 10
 }
-
 {
-  time: 2019101201,
-  id: 1,
-  type: end,
-  op: get,
-  key: 10,
-  val: 200,
+  Time: 2019101201,
+  Id: 1,
+  Type: end,
+  Op: get,
+  Key: 10,
+  Val: 200
 }
 ```
 
@@ -71,48 +70,48 @@ Here's what the entire operation above would look like:
 ```
 [
   {
-    time: 2019101200,
-    id: 0,
-    type: start,
-    op: put,
-    key: 10,
-    val: 200,
+    Time: 2019101200,
+    Id: 0,
+    Type: start,
+    Op: put,
+    Key: 10,
+    Val: 200
   },
   {
-    time: 2019101205,
-    id: 0,
-    type: end,
-    op: put,
-    key: 10,
+    Time: 2019101205,
+    Id: 0,
+    Type: end,
+    Op: put,
+    Key: 10
   },
   {
-    time: 2019101200,
-    id: 1,
-    type: start,
-    op: get,
-    key: 10,
+    Time: 2019101200,
+    Id: 1,
+    Type: start,
+    Op: get,
+    Key: 10
   },
   {
-    time: 2019101201,
-    id: 1,
-    type: end,
-    op: get,
-    key: 10,
-    val: 200,
+    Time: 2019101201,
+    Id: 1,
+    Type: end,
+    Op: get,
+    Key: 10,
+    Val: 200
   },
   {
-    time: 2019101203,
-    id: 2,
-    type: start,
-    op: get,
-    key: 10,
+    Time: 2019101203,
+    Id: 2,
+    Type: start,
+    Op: get,
+    Key: 10
   },
   {
-    time: 201910120504,
-    id: 0,
-    type: end,
-    op: get,
-    key: 0,
+    Time: 201910120504,
+    Id: 2,
+    Type: end,
+    Op: get,
+    Key: 0
   },
 ]
 ```

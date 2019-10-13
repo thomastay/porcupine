@@ -1,0 +1,6 @@
+tags
+*.swp
+*.out
+src/*
+!src/porcupine/
+!src/main/
