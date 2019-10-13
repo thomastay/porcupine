@@ -41,6 +41,11 @@ func ParseKvList(entries []KVLogEntry) []Event {
 	// these two requests will have the same id
 	// assumes that a process does not issue two requests at a time
 
+	// sort the entries by time
+	sort.SliceStable(entries[:], func(lhs, rhs int) bool {
+		return entries[lhs].Time.Before(entries[rhs].Time)
+	})
+
 	for _, entry := range entries {
 		//log.Println(entry)
 		var entryType EventKind
@@ -101,11 +106,6 @@ func ParseKvLog(filename string) []Event {
 	var entries []KVLogEntry
 
 	err = json.Unmarshal(content, &entries)
-	// sort the entries by time
-	sort.SliceStable(entries[:], func(lhs, rhs int) bool {
-		return entries[lhs].Time.Before(entries[rhs].Time)
-	})
-
 	if err != nil {
 		log.Panicln(err)
 	}
