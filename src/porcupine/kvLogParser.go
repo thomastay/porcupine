@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"log"
+	"sort"
 	"strings"
-    "sort"
 	"time"
 )
 
@@ -31,7 +31,7 @@ type KVLogEntry struct {
 	Val  string
 }
 
-func ParseKvList (entries []KVLogEntry) []Event{
+func ParseKvList(entries []KVLogEntry) []Event {
 	var events []Event
 	id := uint(0)
 	procIdMap := make(map[int]uint)
@@ -39,7 +39,7 @@ func ParseKvList (entries []KVLogEntry) []Event{
 	// operation
 	// For instance, a GET request will have a start and end
 	// these two requests will have the same id
-    // assumes that a process does not issue two requests at a time
+	// assumes that a process does not issue two requests at a time
 
 	for _, entry := range entries {
 		//log.Println(entry)
@@ -48,18 +48,18 @@ func ParseKvList (entries []KVLogEntry) []Event{
 		if strings.ToLower(entry.Type) == START {
 			entryType = CallEvent
 			matchId = id
-            var ok bool
-            if _, ok = procIdMap[entry.Id]; ok {
-                log.Panicf("process makes 2 concurrent requests, latest is: %+v", entry)
-            }
-            procIdMap[entry.Id] = id
+			var ok bool
+			if _, ok = procIdMap[entry.Id]; ok {
+				log.Panicf("process makes 2 concurrent requests, latest is: %+v", entry)
+			}
+			procIdMap[entry.Id] = id
 			id++
 		} else { //END
-            var ok bool
+			var ok bool
 			matchId, ok = procIdMap[entry.Id]
-            if !ok {
-                log.Panicf("unmatched element: %+v", entry)
-            }
+			if !ok {
+				log.Panicf("unmatched element: %+v", entry)
+			}
 			delete(procIdMap, entry.Id)
 			entryType = ReturnEvent
 		}
@@ -101,15 +101,15 @@ func ParseKvLog(filename string) []Event {
 	var entries []KVLogEntry
 
 	err = json.Unmarshal(content, &entries)
-    // sort the entries by time
-    sort.SliceStable(entries[:], func(lhs, rhs int) bool {
-        return entries[lhs].Time.Before(entries[rhs].Time)
-    })
+	// sort the entries by time
+	sort.SliceStable(entries[:], func(lhs, rhs int) bool {
+		return entries[lhs].Time.Before(entries[rhs].Time)
+	})
 
 	if err != nil {
 		log.Panicln(err)
 	}
 
-    return ParseKvList(entries)
+	return ParseKvList(entries)
 
 }

@@ -1,6 +1,6 @@
 package porcupine
 
-// Describes the Key-Value pair model for 
+// Describes the Key-Value pair model for
 // our distributed system
 // (Note: Porcupine actually works with arbitrary models)
 // See the original repo for more applications
@@ -33,7 +33,7 @@ func GetKvModel() Model {
 			return ret
 		},
 		Init: func() interface{} {
-            // uninitialized keys start with ""
+			// uninitialized keys start with ""
 			return ""
 		},
 		Step: func(state, input, output interface{}) (bool, interface{}) {
