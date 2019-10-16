@@ -62,7 +62,7 @@ ok := porcupine.CheckKvEntries(entries)
 
 These two tests correspond to the test [c2-bad](test_data/c2_bad.json) and [c2-good](test_data/c2_good.json) in the test repo.
 
-Given another history [total order violation](test_data/c3_total_order_violation.json):
+Given another history [total order violation](test_data/c2_total_order_violation.json):
 
 ```
 C0:  |-- PUT(1) ---|  |-- GET(1) ---|
@@ -78,11 +78,11 @@ Porcupine rejects this history of events too.
 Porcupine can be used as a testing library, suitable for integration into _gotest_.
 Simply have each client log its events in time order, and then concatenate the logs from each client. You do not have to do any special merging of logs from different clients, just a simple append will do. We provide a file called porcupine\_test\_helpers.go, which aims to be a drop in replacement for the regular PUT, GET and APPEND functions.
 
-Clients must log according to a struct called porcupine.KVLogEntry. See the test helpers for implementation details.
+Clients must log according to a struct called porcupine.KVLogEntry. See the [test helpers](proj_test_helpers/pbservice_test.go) for implementation details.
 
 ### Usage as a JSON parser
 
-To interface with applications that aren't written in Go, Porcupine491 also can read JSON. Simply write JSON (in the format below) to an output file. Then, use the porcupine491 binaries to read the JSON file as such:
+For use with applications that aren't written in Go, Porcupine491 also can read JSON. Simply write JSON (in the format below) to an output file. Then, use the porcupine491 binaries to read the JSON file as such:
 
 ```
 ./porcupine test.json
