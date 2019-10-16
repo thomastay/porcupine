@@ -51,6 +51,10 @@ func TestThomas(t *testing.T) {
     ck.porcupine_append(0, entries, "111", "v1")
     ck.porcupine_get(0, entries, "111")
 
+
+    // THIS IS HOW YOU WRITE A JSON TO FILE
+    // IF YOU ARE NOT USING IT AS A LIBRARY
+
     fileData, _ := json.MarshalIndent(entries, "", "  ")
     _ = ioutil.WriteFile("test.json", fileData, 0644)
 
@@ -86,8 +90,10 @@ func TestThomas2(t *testing.T) {
         entries = append(entries, temp...)
     }
 
-    fileData, _ := json.MarshalIndent(entries, "", "  ")
-    _ = ioutil.WriteFile("test.json", fileData, 0644)
+    ok := porcupine.CheckKvEntries(entries)
+    if !ok {
+        t.Fatalf("Linearizability violation detected\n")
+    }
 
 	s1.kill()
 }
@@ -162,8 +168,10 @@ func TestThomas3(t *testing.T) {
         entries = append(entries, temp...)
     }
 
-    fileData, _ := json.MarshalIndent(entries, "", "  ")
-    _ = ioutil.WriteFile("../../test_data/c3_unreliable.json", fileData, 0644)
+    ok := porcupine.CheckKvEntries(entries)
+    if !ok {
+        t.Fatalf("Linearizability violation detected\n")
+    }
 
 	for i := 0; i < nservers; i++ {
 		sa[i].kill()

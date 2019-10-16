@@ -114,6 +114,11 @@ func ParseKvLog(filename string) []Event {
 
 }
 
-func CheckKvEntries(events []Event) bool {
+func CheckKvEvents(events []Event) bool {
     return CheckEvents(getKvModel(), events)
+}
+
+func CheckKvEntries(entries []KVLogEntry) bool {
+    events := ParseKvList(entries)
+    return CheckKvEvents(events)
 }

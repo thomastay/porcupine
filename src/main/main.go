@@ -13,7 +13,7 @@ func main() {
     //  is linearizable
     // If it is, it follows the UNIX philosophy
     //  and gives no output
-	res := porcupine.CheckKvEntries(events)
+	res := porcupine.CheckKvEvents(events)
 	if !res {
 		fmt.Println(`
         ##################################

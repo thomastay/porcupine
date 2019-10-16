@@ -8,7 +8,7 @@ import (
 func checkKv(t *testing.T, logName string, expected bool) {
 	// t.Parallel()
 	events := ParseKvLog(fmt.Sprintf("../../test_data/%s.json", logName))
-	res := CheckKvEntries(events)
+	res := CheckKvEvents(events)
 	if res != expected {
 		t.Fatalf("expected output %t, got output %t", expected, res)
 	}
