@@ -76,17 +76,19 @@ Porcupine rejects this history of events too.
 ### Usage as a Library
 
 Porcupine can be used as a testing library, suitable for integration into _gotest_.
-Simply have each client log its events in time order, and then concatenate the logs from each client. You do not have to do any special merging of logs from different clients, just a simple append will do. We provide a file called porcupine\_test\_helpers.go, which aims to be a drop in replacement for the regular PUT, GET and APPEND functions.
+Simply have each client log its events in time order, and then concatenate the logs from each client. You do not have to do any special merging of logs from different clients, just a simple append will do. We provide a file called [porcupine\_test\_helpers](proj_test_helpers/porcupine_test_helpers.go), which aims to be a drop in replacement for the regular PUT, GET and APPEND functions.
 
 Clients must log according to a struct called porcupine.KVLogEntry. See the [test helpers](proj_test_helpers/pbservice_test.go) for implementation details.
 
-### Usage as a JSON parser
+### Usage as a standalone binary
 
-For use with applications that aren't written in Go, Porcupine491 also can read JSON. Simply write JSON (in the format below) to an output file. Then, use the porcupine491 binaries to read the JSON file as such:
+For use with applications that aren't written in Go, Porcupine491 also can read the JSON file and test for linearizability. Simply write JSON (in the format below) to an output file. Then, use the porcupine491 binaries to read the JSON file as follows:
 
 ```
 ./porcupine test.json
 ```
+
+We provide standalone binaries for CAEN (Linux) in the [Releases](releases/) page.
 
 *Outputs*:
 
@@ -99,19 +101,20 @@ For instance, here's what the GET(200) operation above would look like:
 
 ```
 {
-  Time: 2019101200,
-  Id: 1,
-  Type: start,
-  Op: get,
-  Key: 10
-}
+  "Time": "2019-10-12T20:33:45.034107351-04:00",
+  "Id": 1,
+  "Type": "start",
+  "Op": "get",
+  "Key": "0",
+  "Val": ""
+},
 {
-  Time: 2019101201,
-  Id: 1,
-  Type: end,
-  Op: get,
-  Key: 10,
-  Val: 200
+  "Time": "2019-10-12T20:33:45.035555076-04:00",
+  "Id": 1,
+  "Type": "end",
+  "Op": "get",
+  "Key": "0",
+  "Val": "200"
 }
 ```
 
@@ -120,49 +123,53 @@ Here's what the entire operation above would look like:
 ```
 [
   {
-    Time: 2019101200,
-    Id: 0,
-    Type: start,
-    Op: put,
-    Key: 10,
-    Val: 200
+    "Time": "2019-10-12T20:33:40.926713962-04:00",
+    "Id": 0,
+    "Type": "start",
+    "Op": "put",
+    "Key": "0",
+    "Val": "200"
   },
   {
-    Time: 2019101205,
-    Id: 0,
-    Type: end,
-    Op: put,
-    Key: 10
+    "Time": "2019-10-12T20:33:46.034104576-04:00",
+    "Id": 0,
+    "Type": "end",
+    "Op": "put",
+    "Key": "",
+    "Val": ""
   },
   {
-    Time: 2019101200,
-    Id: 1,
-    Type: start,
-    Op: get,
-    Key: 10
+    "Time": "2019-10-12T20:33:41.034107351-04:00",
+    "Id": 1,
+    "Type": "start",
+    "Op": "get",
+    "Key": "0",
+    "Val": ""
   },
   {
-    Time: 2019101201,
-    Id: 1,
-    Type: end,
-    Op: get,
-    Key: 10,
-    Val: 200
+    "Time": "2019-10-12T20:33:41.035555076-04:00",
+    "Id": 1,
+    "Type": "end",
+    "Op": "get",
+    "Key": "0",
+    "Val": ""
   },
   {
-    Time: 2019101203,
-    Id: 2,
-    Type: start,
-    Op: get,
-    Key: 10
+    "Time": "2019-10-12T20:33:45.034107351-04:00",
+    "Id": 1,
+    "Type": "start",
+    "Op": "get",
+    "Key": "0",
+    "Val": ""
   },
   {
-    Time: 201910120504,
-    Id: 2,
-    Type: end,
-    Op: get,
-    Key: 0
-  },
+    "Time": "2019-10-12T20:33:45.035555076-04:00",
+    "Id": 1,
+    "Type": "end",
+    "Op": "get",
+    "Key": "0",
+    "Val": "200"
+  }
 ]
 ```
 
