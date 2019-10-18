@@ -66,10 +66,14 @@ Given another history [total order violation](test_data/c2_total_order_violation
 
 ```
 C0:  |-- PUT(1) ---|  |-- GET(1) ---|
-C1:  |-- PUT(2) ---|  |-- PUT(2) ---|
+C1:  |-- PUT(2) ---|  |-- GET(2) ---|
 ```
-Porcupine rejects this history of events too.
+This is again linearizable to each client, but unlinearizable overall. 
 
+```go
+ok := porcupine.CheckKvEntries(entries)
+// returns false
+```
 
 ## Usage
 
